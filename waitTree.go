@@ -10,24 +10,57 @@ func (e EmptyWaitTree) Add(delta int) {
 	//panic("implement me")
 }
 
+func (e EmptyWaitTree) Wait() {
+	//TODO implement me
+	//panic("implement me")
+}
+
+func (e EmptyWaitTree) Done() {
+	//TODO implement me
+	//panic("implement me")
+}
+
 func Background() *EmptyWaitTree {
 
 	return &EmptyWaitTree{}
 }
 
 type WaitTree struct {
-	parent    WaitTreeInterface
+	son       WaitTreeInterface
 	waitGroup *sync.WaitGroup
+}
+
+func NewWaitTree(son WaitTreeInterface) *WaitTree {
+
+	wait := sync.WaitGroup{}
+
+	return &WaitTree{son: son, waitGroup: &wait}
 }
 
 func (w WaitTree) Add(delta int) {
 	//TODO implement me
 	//panic("implement me")
+
+	w.waitGroup.Add(delta)
+
+	//w.waitGroup.Wait()
+	//w.waitGroup.Done()
+
 }
 
-func NewWaitTree(parent WaitTreeInterface) *WaitTree {
+func (w WaitTree) Wait() {
+	//TODO implement me
+	//panic("implement me")
+	w.waitGroup.Wait()
 
-	wait := sync.WaitGroup{}
+	w.son.Wait()
 
-	return &WaitTree{parent: parent, waitGroup: &wait}
+}
+
+func (w WaitTree) Done() {
+	//TODO implement me
+	//panic("implement me")
+
+	w.waitGroup.Done()
+
 }
