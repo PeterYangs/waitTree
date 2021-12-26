@@ -1,3 +1,4 @@
+```go
 package main
 
 import (
@@ -10,8 +11,8 @@ func main() {
 
 	father := waitTree.NewWaitTree(waitTree.Background())
 
-	son := waitTree.NewWaitTree(father)
-	son2 := waitTree.NewWaitTree(father)
+    son:= waitTree.NewWaitTree(father)
+    son2:= waitTree.NewWaitTree(father)
 
 	for i := 0; i < 10; i++ {
 
@@ -21,7 +22,7 @@ func main() {
 
 			defer son.Done()
 
-			time.Sleep(1 * time.Second)
+			time.Sleep(1* time.Second)
 
 			fmt.Println("son done")
 
@@ -37,7 +38,7 @@ func main() {
 
 			defer son2.Done()
 
-			time.Sleep(2 * time.Second)
+			time.Sleep(2* time.Second)
 
 			fmt.Println("son2 done")
 
@@ -49,4 +50,6 @@ func main() {
 
 	//fmt.Println(father.GetSon())
 
+
 }
+```

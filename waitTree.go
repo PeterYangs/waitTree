@@ -1,43 +1,63 @@
 package waitTree
 
-import "sync"
+import (
+	"fmt"
+	"sync"
+)
 
-type EmptyWaitTree struct {
+type emptyWaitTree struct {
 }
 
-func (e EmptyWaitTree) Add(delta int) {
+func (e emptyWaitTree) Add(delta int) {
 	//TODO implement me
 	//panic("implement me")
 }
 
-func (e EmptyWaitTree) Wait() {
+func (e emptyWaitTree) Wait() {
 	//TODO implement me
 	//panic("implement me")
 }
 
-func (e EmptyWaitTree) Done() {
+func (e emptyWaitTree) Done() {
 	//TODO implement me
 	//panic("implement me")
 }
 
-func Background() *EmptyWaitTree {
+func Background() *emptyWaitTree {
 
-	return &EmptyWaitTree{}
+	return &emptyWaitTree{}
 }
 
 type WaitTree struct {
-	son       WaitTreeInterface
+	son       []WaitTreeInterface
 	waitGroup *sync.WaitGroup
+	lock      sync.Mutex
 }
 
-func NewWaitTree(son WaitTreeInterface) *WaitTree {
+func NewWaitTree(parent WaitTreeInterface) *WaitTree {
 
 	wait := sync.WaitGroup{}
 
-	return &WaitTree{son: son, waitGroup: &wait}
+	ww := &WaitTree{son: []WaitTreeInterface{}, waitGroup: &wait, lock: sync.Mutex{}}
+
+	switch parent.(type) {
+
+	case *emptyWaitTree:
+
+	case *WaitTree:
+
+		fmt.Println("nice啊")
+
+		t := parent.(*WaitTree)
+
+		t.setSon(ww)
+
+	}
+
+	return ww
 }
 
-func (w WaitTree) Add(delta int) {
+func (w *WaitTree) Add(delta int) {
 	//TODO implement me
 	//panic("implement me")
 
@@ -48,19 +68,39 @@ func (w WaitTree) Add(delta int) {
 
 }
 
-func (w WaitTree) Wait() {
+func (w *WaitTree) Wait() {
 	//TODO implement me
 	//panic("implement me")
 	w.waitGroup.Wait()
 
-	w.son.Wait()
+	for _, treeInterface := range w.son {
+
+		treeInterface.Wait()
+	}
 
 }
 
-func (w WaitTree) Done() {
+func (w *WaitTree) Done() {
 	//TODO implement me
 	//panic("implement me")
 
 	w.waitGroup.Done()
 
+}
+
+func (w *WaitTree) setSon(tree *WaitTree) {
+
+	tree.lock.Lock()
+
+	defer tree.lock.Unlock()
+
+	//tree.son = append(tree.son, w)
+
+	w.son = append(w.son, tree)
+
+}
+
+func (w *WaitTree) GetSon() []WaitTreeInterface {
+
+	return w.son
 }
