@@ -46,7 +46,7 @@ func NewWaitTree(parent WaitTreeInterface) *WaitTree {
 
 	case *WaitTree:
 
-		fmt.Println("nice啊")
+		
 
 		t := parent.(*WaitTree)
 
