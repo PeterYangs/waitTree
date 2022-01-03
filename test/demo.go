@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/PeterYangs/waitTree"
 	"time"
-	"waitTree"
 )
 
 func main() {
@@ -40,6 +40,28 @@ func main() {
 			time.Sleep(2 * time.Second)
 
 			fmt.Println("son2 done")
+
+		}()
+
+	}
+
+	father.Wait()
+
+	father.Release()
+
+	fmt.Println(father.GetSon())
+
+	for i := 0; i < 10; i++ {
+
+		son.Add(1)
+
+		go func() {
+
+			defer son.Done()
+
+			time.Sleep(1 * time.Second)
+
+			fmt.Println("sonxxx done")
 
 		}()
 

@@ -1,7 +1,6 @@
 package waitTree
 
 import (
-	
 	"sync"
 )
 
@@ -21,6 +20,10 @@ func (e emptyWaitTree) Wait() {
 func (e emptyWaitTree) Done() {
 	//TODO implement me
 	//panic("implement me")
+}
+
+func (e emptyWaitTree) Release() {
+
 }
 
 func Background() *emptyWaitTree {
@@ -45,8 +48,6 @@ func NewWaitTree(parent WaitTreeInterface) *WaitTree {
 	case *emptyWaitTree:
 
 	case *WaitTree:
-
-		
 
 		t := parent.(*WaitTree)
 
@@ -78,6 +79,8 @@ func (w *WaitTree) Wait() {
 		treeInterface.Wait()
 	}
 
+	//w.son = []WaitTreeInterface{}
+
 }
 
 func (w *WaitTree) Done() {
@@ -86,6 +89,11 @@ func (w *WaitTree) Done() {
 
 	w.waitGroup.Done()
 
+}
+
+func (w *WaitTree) Release() {
+
+	w.son = []WaitTreeInterface{}
 }
 
 func (w *WaitTree) setSon(tree *WaitTree) {
