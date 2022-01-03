@@ -48,7 +48,8 @@ func main() {
 
 	father.Wait()
 
-	//fmt.Println(father.GetSon())
+	//释放子wait
+	father.Release()
 
 
 }
