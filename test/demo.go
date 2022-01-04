@@ -47,9 +47,14 @@ func main() {
 
 	father.Wait()
 
-	son.Wait()
+	//释放所有子wait
+	father.ReleaseSon()
 
-	//从父wait中删除
-	son.Release()
+	father.GetSon()
+
+	//son.Wait()
+	//
+	////从父wait中删除
+	//son.Release()
 
 }
