@@ -47,28 +47,9 @@ func main() {
 
 	father.Wait()
 
-	father.Release()
+	son.Wait()
 
-	fmt.Println(father.GetSon())
-
-	for i := 0; i < 10; i++ {
-
-		son.Add(1)
-
-		go func() {
-
-			defer son.Done()
-
-			time.Sleep(1 * time.Second)
-
-			fmt.Println("sonxxx done")
-
-		}()
-
-	}
-
-	father.Wait()
-
-	//fmt.Println(father.GetSon())
+	//从父wait中删除
+	son.Release()
 
 }

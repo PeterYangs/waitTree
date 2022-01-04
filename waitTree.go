@@ -1,6 +1,7 @@
 package waitTree
 
 import (
+	"fmt"
 	"sync"
 )
 
@@ -32,7 +33,8 @@ func Background() *emptyWaitTree {
 }
 
 type WaitTree struct {
-	son       []WaitTreeInterface
+	son       sync.Map
+	parent    *WaitTree
 	waitGroup *sync.WaitGroup
 	lock      sync.Mutex
 }
@@ -41,7 +43,7 @@ func NewWaitTree(parent WaitTreeInterface) *WaitTree {
 
 	wait := sync.WaitGroup{}
 
-	ww := &WaitTree{son: []WaitTreeInterface{}, waitGroup: &wait, lock: sync.Mutex{}}
+	ww := &WaitTree{son: sync.Map{}, waitGroup: &wait, lock: sync.Mutex{}}
 
 	switch parent.(type) {
 
@@ -53,6 +55,8 @@ func NewWaitTree(parent WaitTreeInterface) *WaitTree {
 
 		t.setSon(ww)
 
+		ww.parent = t
+
 	}
 
 	return ww
@@ -60,12 +64,8 @@ func NewWaitTree(parent WaitTreeInterface) *WaitTree {
 
 func (w *WaitTree) Add(delta int) {
 	//TODO implement me
-	//panic("implement me")
 
 	w.waitGroup.Add(delta)
-
-	//w.waitGroup.Wait()
-	//w.waitGroup.Done()
 
 }
 
@@ -74,12 +74,15 @@ func (w *WaitTree) Wait() {
 	//panic("implement me")
 	w.waitGroup.Wait()
 
-	for _, treeInterface := range w.son {
+	w.son.Range(func(key, value interface{}) bool {
 
-		treeInterface.Wait()
-	}
+		tree := value.(*WaitTree)
 
-	//w.son = []WaitTreeInterface{}
+		tree.Wait()
+
+		return true
+
+	})
 
 }
 
@@ -91,24 +94,38 @@ func (w *WaitTree) Done() {
 
 }
 
+// Release 从父waitTree中释放
 func (w *WaitTree) Release() {
 
-	w.son = []WaitTreeInterface{}
+	w.parent.son.Delete(w)
+
+}
+
+// ReleaseSon 释放所有子waitTree
+func (w *WaitTree) ReleaseSon() {
+
+	w.son.Range(func(key, value interface{}) bool {
+
+		w.son.Delete(key)
+
+		return true
+	})
+
 }
 
 func (w *WaitTree) setSon(tree *WaitTree) {
 
-	tree.lock.Lock()
-
-	defer tree.lock.Unlock()
-
-	//tree.son = append(tree.son, w)
-
-	w.son = append(w.son, tree)
+	w.son.Store(tree, tree)
 
 }
 
-func (w *WaitTree) GetSon() []WaitTreeInterface {
+func (w *WaitTree) GetSon() {
 
-	return w.son
+	w.son.Range(func(key, value interface{}) bool {
+
+		fmt.Println(value)
+
+		return true
+	})
+
 }
