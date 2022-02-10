@@ -19,7 +19,13 @@ func main() {
 
 		go func() {
 
-			defer son.Done()
+			defer func() {
+
+				son.Done()
+
+				//从父类中释放
+				son.Release()
+			}()
 
 			time.Sleep(1 * time.Second)
 
@@ -35,7 +41,13 @@ func main() {
 
 		go func() {
 
-			defer son2.Done()
+			defer func() {
+
+				son2.Done()
+
+				//从父类中释放
+				son2.Release()
+			}()
 
 			time.Sleep(2 * time.Second)
 
@@ -47,14 +59,9 @@ func main() {
 
 	father.Wait()
 
+	father.Wait()
+
 	//释放所有子wait
-	father.ReleaseSon()
-
-	father.GetSon()
-
-	//son.Wait()
-	//
-	////从父wait中删除
-	//son.Release()
+	//father.ReleaseSon()
 
 }

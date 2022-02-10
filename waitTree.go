@@ -71,7 +71,11 @@ func (w *WaitTree) Add(delta int) {
 
 func (w *WaitTree) Wait() {
 	//TODO implement me
-	//panic("implement me")
+
+	w.lock.Lock()
+
+	defer w.lock.Unlock()
+
 	w.waitGroup.Wait()
 
 	w.son.Range(func(key, value interface{}) bool {
@@ -96,6 +100,10 @@ func (w *WaitTree) Done() {
 
 // Release 从父waitTree中释放
 func (w *WaitTree) Release() {
+
+	w.lock.Lock()
+
+	defer w.lock.Unlock()
 
 	w.parent.son.Delete(w)
 
